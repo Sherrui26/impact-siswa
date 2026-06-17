@@ -1,0 +1,14 @@
+<c:set var="user" value="${sessionScope.currentUser}" />
+<header class="topbar">
+    <div class="profile-mini">
+        <div class="avatar">${user.initials}</div>
+        <div>
+            <strong>${user.fullName}</strong>
+            <span>${user.faculty}</span>
+        </div>
+    </div>
+    <div class="table-actions">
+        <span class="pill">${user.matricNo}</span>
+        <a class="btn ghost" href="${ctx}/logout"><i class="bi bi-box-arrow-right"></i>Logout</a>
+    </div>
+</header>

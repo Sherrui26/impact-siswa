@@ -1,0 +1,36 @@
+<c:set var="user" value="${sessionScope.currentUser}" />
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="app-mark logo-mark">
+            <img class="brand-logo-img" src="${ctx}/images/logo.png" alt="Impact-Siswa logo">
+        </div>
+        <div>
+            <strong>Impact-Siswa</strong>
+            <span>${user.roleLabel} workspace</span>
+        </div>
+    </div>
+    <nav class="nav" aria-label="Main navigation">
+        <a class="nav-link ${activePage eq 'dashboard' ? 'active' : ''}" href="${ctx}/app/dashboard"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+        <a class="nav-link ${activePage eq 'events' ? 'active' : ''}" href="${ctx}/app/events"><i class="bi bi-calendar-event"></i>Events</a>
+        <c:if test="${user.role eq 'student'}">
+            <a class="nav-link ${activePage eq 'hours' ? 'active' : ''}" href="${ctx}/app/hours"><i class="bi bi-clock-history"></i>My Hours</a>
+        </c:if>
+        <c:if test="${user.role ne 'student'}">
+            <a class="nav-link ${activePage eq 'approvals' ? 'active' : ''}" href="${ctx}/app/approvals"><i class="bi bi-check2-square"></i>Approvals</a>
+            <a class="nav-link ${activePage eq 'manage-events' ? 'active' : ''}" href="${ctx}/app/manage-events"><i class="bi bi-pencil-square"></i>Manage Events</a>
+            <a class="nav-link ${activePage eq 'reports' ? 'active' : ''}" href="${ctx}/app/reports"><i class="bi bi-bar-chart-line"></i>Reports</a>
+        </c:if>
+        <c:if test="${user.role eq 'admin'}">
+            <a class="nav-link ${activePage eq 'affiliations' ? 'active' : ''}" href="${ctx}/app/affiliations"><i class="bi bi-building"></i>Faculties & Clubs</a>
+            <a class="nav-link ${activePage eq 'users' ? 'active' : ''}" href="${ctx}/app/users"><i class="bi bi-people"></i>Users</a>
+        </c:if>
+        <a class="nav-link ${activePage eq 'profile' ? 'active' : ''}" href="${ctx}/app/profile"><i class="bi bi-person-gear"></i>Profile</a>
+    </nav>
+    <c:if test="${user.role eq 'student'}">
+        <div class="sidebar-card">
+            <strong>${user.badgeName} Badge</strong>
+            <p class="muted">${user.totalHours} verified volunteer hours recorded.</p>
+            <span class="pill green">${user.roleLabel}</span>
+        </div>
+    </c:if>
+</aside>

@@ -1,0 +1,23 @@
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>${pageTitle} - Impact-Siswa</title>
+    <%@ include file="head.jspf" %>
+</head>
+<body>
+<div class="app-shell">
+    <%@ include file="sidebar.jspf" %>
+    <main class="main">
+        <%@ include file="topbar.jspf" %>
+        <section class="content">
+            <c:if test="${not empty sessionScope.flash_success}">
+                <div class="alert success"><c:out value="${sessionScope.flash_success}"/></div>
+                <c:remove var="flash_success" scope="session"/>
+            </c:if>
+            <c:if test="${not empty sessionScope.flash_error}">
+                <div class="alert error"><c:out value="${sessionScope.flash_error}"/></div>
+                <c:remove var="flash_error" scope="session"/>
+            </c:if>

@@ -1,0 +1,99 @@
+<div class="modal-backdrop" id="confirmModal" hidden>
+    <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+        <div class="confirm-icon" id="confirmModalIconWrap"><i id="confirmModalIcon" class="bi bi-check2-circle"></i></div>
+        <p class="confirm-kicker" id="confirmModalKicker">Confirm action</p>
+        <h2 id="confirmModalTitle">Please confirm</h2>
+        <p id="confirmModalMessage" class="muted">This action will be saved.</p>
+        <div class="confirm-actions">
+            <button class="btn ghost" type="button" data-confirm-close>Back</button>
+            <button class="btn success" type="button" id="confirmModalAction">
+                <i id="confirmModalActionIcon" class="bi bi-check2-circle"></i>
+                <span id="confirmModalActionText">Confirm</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+(() => {
+    const modal = document.querySelector("#confirmModal");
+    if (!modal) return;
+
+    let pendingForm = null;
+    let pendingButton = null;
+    const kicker = document.querySelector("#confirmModalKicker");
+    const title = document.querySelector("#confirmModalTitle");
+    const message = document.querySelector("#confirmModalMessage");
+    const iconWrap = document.querySelector("#confirmModalIconWrap");
+    const icon = document.querySelector("#confirmModalIcon");
+    const actionButton = document.querySelector("#confirmModalAction");
+    const actionIcon = document.querySelector("#confirmModalActionIcon");
+    const actionText = document.querySelector("#confirmModalActionText");
+
+    function closeModal() {
+        pendingForm = null;
+        pendingButton = null;
+        modal.hidden = true;
+        document.body.classList.remove("modal-open");
+    }
+
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-confirm-submit]");
+        if (!button) return;
+
+        pendingForm = button.closest("form");
+        pendingButton = button;
+        if (pendingForm && !pendingForm.checkValidity()) {
+            pendingForm.reportValidity();
+            pendingForm = null;
+            pendingButton = null;
+            return;
+        }
+
+        const tone = button.dataset.confirmTone || "success";
+        const iconClass = button.dataset.confirmIcon || "bi bi-check2-circle";
+
+        kicker.textContent = button.dataset.confirmKicker || "Confirm action";
+        title.textContent = button.dataset.confirmTitle || "Please confirm";
+        message.textContent = button.dataset.confirmMessage || "This action will be saved.";
+        icon.className = iconClass;
+        actionIcon.className = iconClass;
+        actionText.textContent = button.dataset.confirmAction || "Confirm";
+        actionButton.className = "btn " + (tone === "danger" ? "danger" : "success");
+        iconWrap.className = "confirm-icon" + (tone === "danger" ? " danger" : "");
+
+        modal.hidden = false;
+        document.body.classList.add("modal-open");
+        actionButton.focus();
+    });
+
+    actionButton.addEventListener("click", () => {
+        if (pendingForm) {
+            const oldSubmitter = pendingForm.querySelector("input[data-confirm-submitter]");
+            if (oldSubmitter) oldSubmitter.remove();
+
+            if (pendingButton && pendingButton.name) {
+                const submitterValue = document.createElement("input");
+                submitterValue.type = "hidden";
+                submitterValue.name = pendingButton.name;
+                submitterValue.value = pendingButton.value;
+                submitterValue.dataset.confirmSubmitter = "true";
+                pendingForm.appendChild(submitterValue);
+            }
+
+            HTMLFormElement.prototype.submit.call(pendingForm);
+        }
+    });
+
+    document.querySelectorAll("[data-confirm-close]").forEach((button) => {
+        button.addEventListener("click", closeModal);
+    });
+
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.hidden) closeModal();
+    });
+})();
+</script>
