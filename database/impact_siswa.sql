@@ -117,10 +117,4 @@ INSERT INTO events (title, description, cat_id, event_date, location, hours, max
 ('Campus Health Awareness Booth', 'Assist with registration, booth operations, and health campaign outreach.', 4, '2026-08-02', 'Faculty Walkway', 3.00, 30, 1),
 ('Recycling Collection Weekend', 'Collect, label, and sort recyclable materials from residential colleges.', 2, '2026-08-11', 'College Zone A', 4.00, 50, 2);
 
-INSERT INTO event_registrations (event_id, user_id, status) VALUES
-(2, 3, 'approved')
-ON DUPLICATE KEY UPDATE status = VALUES(status);
 
-INSERT INTO hour_logs (user_id, event_id, hours_claimed, evidence, status, remarks, approved_by, approved_at) VALUES
-(3, 2, 4.00, 'Attendance verified by facilitator.', 'approved', 'Approved with attendance list.', 2, '2026-06-15 10:00:00'),
-(3, 1, 6.00, 'Uploaded group photo and supervisor signature.', 'pending', 'Waiting for review.', NULL, NULL);
