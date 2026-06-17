@@ -30,50 +30,60 @@
                     <td>
                         <c:choose>
                             <c:when test="${sessionScope.currentUser.role eq 'student'}">
-                                <form method="post" action="${ctx}/app/events">
-                                    <input type="hidden" name="eventId" value="${event.eventId}">
-                                    <c:choose>
-                                        <c:when test="${event.registrationStatus eq 'approved'}">
-                                            <input type="hidden" name="action" value="cancelJoin">
-                                            <button class="btn ghost" type="button"
-                                                    data-confirm-submit
-                                                    data-confirm-tone="danger"
-                                                    data-confirm-kicker="Cancel event registration"
-                                                    data-confirm-title="<c:out value='${event.title}'/>"
-                                                    data-confirm-message="Cancel your registration for this event?"
-                                                    data-confirm-action="Yes, Cancel Registration"
-                                                    data-confirm-icon="bi bi-x-circle">
-                                                <i class="bi bi-x-circle"></i>Cancel
-                                            </button>
-                                        </c:when>
-                                        <c:when test="${event.registrationStatus eq 'pending'}">
-                                            <input type="hidden" name="action" value="cancelJoin">
-                                            <button class="btn ghost" type="button"
-                                                    data-confirm-submit
-                                                    data-confirm-tone="danger"
-                                                    data-confirm-kicker="Cancel join request"
-                                                    data-confirm-title="<c:out value='${event.title}'/>"
-                                                    data-confirm-message="Cancel your pending request for this event?"
-                                                    data-confirm-action="Yes, Cancel Request"
-                                                    data-confirm-icon="bi bi-x-circle">
-                                                <i class="bi bi-hourglass-split"></i>Pending
-                                            </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input type="hidden" name="action" value="join">
-                                            <button class="btn success" type="button"
-                                                    data-confirm-submit
-                                                    data-confirm-kicker="${event.registrationStatus eq 'rejected' ? 'Request again' : 'Request event registration'}"
-                                                    data-confirm-title="<c:out value='${event.title}'/>"
-                                                    data-confirm-message="${event.registrationStatus eq 'rejected' ? 'Your previous request was rejected. Submit a new request?' : 'Submit a request to join this event?'}"
-                                                    data-confirm-action="${event.registrationStatus eq 'rejected' ? 'Yes, Request Again' : 'Yes, Request to Join'}"
-                                                    data-confirm-icon="bi bi-calendar-check"
-                                                    ${event.slotsLeft le 0 ? 'disabled' : ''}>
-                                                <i class="bi bi-plus-circle"></i>${event.registrationStatus eq 'rejected' ? 'Request Again' : 'Join'}
-                                            </button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </form>
+                                <c:choose>
+                                    <c:when test="${event.claimed}">
+                                        <span class="pill ${event.claimStatus eq 'pending' ? 'amber' : 'green'}">
+                                            <i class="bi bi-check-circle"></i>&nbsp;Claimed (<fmt:formatNumber value="${event.claimedHours}" maxFractionDigits="2"/> Hours)
+                                        </span>
+                                        <c:if test="${event.claimStatus eq 'pending'}"><span class="label">Reviewing</span></c:if>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <form method="post" action="${ctx}/app/events">
+                                            <input type="hidden" name="eventId" value="${event.eventId}">
+                                            <c:choose>
+                                                <c:when test="${event.registrationStatus eq 'approved'}">
+                                                    <input type="hidden" name="action" value="cancelJoin">
+                                                    <button class="btn ghost" type="button"
+                                                            data-confirm-submit
+                                                            data-confirm-tone="danger"
+                                                            data-confirm-kicker="Cancel event registration"
+                                                            data-confirm-title="<c:out value='${event.title}'/>"
+                                                            data-confirm-message="Cancel your registration for this event?"
+                                                            data-confirm-action="Yes, Cancel Registration"
+                                                            data-confirm-icon="bi bi-x-circle">
+                                                        <i class="bi bi-x-circle"></i>Cancel
+                                                    </button>
+                                                </c:when>
+                                                <c:when test="${event.registrationStatus eq 'pending'}">
+                                                    <input type="hidden" name="action" value="cancelJoin">
+                                                    <button class="btn ghost" type="button"
+                                                            data-confirm-submit
+                                                            data-confirm-tone="danger"
+                                                            data-confirm-kicker="Cancel join request"
+                                                            data-confirm-title="<c:out value='${event.title}'/>"
+                                                            data-confirm-message="Cancel your pending request for this event?"
+                                                            data-confirm-action="Yes, Cancel Request"
+                                                            data-confirm-icon="bi bi-x-circle">
+                                                        <i class="bi bi-hourglass-split"></i>Pending
+                                                    </button>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="hidden" name="action" value="join">
+                                                    <button class="btn success" type="button"
+                                                            data-confirm-submit
+                                                            data-confirm-kicker="${event.registrationStatus eq 'rejected' ? 'Request again' : 'Request event registration'}"
+                                                            data-confirm-title="<c:out value='${event.title}'/>"
+                                                            data-confirm-message="${event.registrationStatus eq 'rejected' ? 'Your previous request was rejected. Submit a new request?' : 'Submit a request to join this event?'}"
+                                                            data-confirm-action="${event.registrationStatus eq 'rejected' ? 'Yes, Request Again' : 'Yes, Request to Join'}"
+                                                            data-confirm-icon="bi bi-calendar-check"
+                                                            ${event.slotsLeft le 0 ? 'disabled' : ''}>
+                                                        <i class="bi bi-plus-circle"></i>${event.registrationStatus eq 'rejected' ? 'Request Again' : 'Join'}
+                                                    </button>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </form>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:otherwise>
                                 <a class="btn" href="${ctx}/app/manage-events?edit=${event.eventId}"><i class="bi bi-pencil"></i>Edit</a>

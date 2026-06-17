@@ -3,7 +3,8 @@
 <c:set var="pageTitle" value="Dashboard" />
 <%@ include file="../includes/layout-start.jspf" %>
 <c:choose>
-    <c:when test="${sessionScope.currentUser.badgeName eq 'Gold' || sessionScope.currentUser.badgeName eq 'Platinum'}"><c:set var="dashboardBadgeImage" value="${ctx}/images/gold.png" /></c:when>
+    <c:when test="${sessionScope.currentUser.badgeName eq 'Platinum'}"><c:set var="dashboardBadgeImage" value="${ctx}/images/platinum.png" /></c:when>
+    <c:when test="${sessionScope.currentUser.badgeName eq 'Gold'}"><c:set var="dashboardBadgeImage" value="${ctx}/images/gold.png" /></c:when>
     <c:when test="${sessionScope.currentUser.badgeName eq 'Silver'}"><c:set var="dashboardBadgeImage" value="${ctx}/images/silver.png" /></c:when>
     <c:otherwise><c:set var="dashboardBadgeImage" value="${ctx}/images/bronze.png" /></c:otherwise>
 </c:choose>

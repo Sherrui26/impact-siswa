@@ -5,6 +5,7 @@ import com.impactsiswa.model.EventRegistration;
 import com.impactsiswa.model.User;
 import com.impactsiswa.model.VolunteerEvent;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -21,7 +22,9 @@ public class EventDAO {
                 SELECT e.*, c.name AS category_name, u.full_name AS creator_name,
                        COALESCE(joined.total, 0) AS joined_count,
                        CASE WHEN mine.status = 'approved' THEN 1 ELSE 0 END AS joined_by_current_user,
-                       mine.status AS registration_status
+                       mine.status AS registration_status,
+                       claim.hours_claimed AS claimed_hours,
+                       claim.status AS claim_status
                 FROM events e
                 JOIN categories c ON c.cat_id = e.cat_id
                 JOIN users u ON u.user_id = e.created_by
@@ -33,11 +36,20 @@ public class EventDAO {
                 ) joined ON joined.event_id = e.event_id
                 LEFT JOIN event_registrations mine
                     ON mine.event_id = e.event_id AND mine.user_id = ?
-                ORDER BY e.event_date ASC, e.title ASC
+                LEFT JOIN hour_logs claim
+                    ON claim.event_id = e.event_id AND claim.user_id = ?
+                   AND claim.status IN ('pending', 'approved')
+                ORDER BY CASE
+                             WHEN claim.hours_claimed IS NOT NULL THEN 2
+                             WHEN mine.status IN ('approved', 'pending') THEN 1
+                             ELSE 0
+                         END ASC,
+                         e.event_date ASC, e.title ASC
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, currentUserId);
+            ps.setInt(2, currentUserId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     events.add(map(rs));
@@ -54,7 +66,9 @@ public class EventDAO {
                 SELECT e.*, c.name AS category_name, u.full_name AS creator_name,
                        COALESCE(joined.total, 0) AS joined_count,
                        0 AS joined_by_current_user,
-                       NULL AS registration_status
+                       NULL AS registration_status,
+                       NULL AS claimed_hours,
+                       NULL AS claim_status
                 FROM events e
                 JOIN categories c ON c.cat_id = e.cat_id
                 JOIN users u ON u.user_id = e.created_by
@@ -129,7 +143,9 @@ public class EventDAO {
                 SELECT e.*, c.name AS category_name, u.full_name AS creator_name,
                        COALESCE(joined.total, 0) AS joined_count,
                        1 AS joined_by_current_user,
-                       er.status AS registration_status
+                       er.status AS registration_status,
+                       NULL AS claimed_hours,
+                       NULL AS claim_status
                 FROM event_registrations er
                 JOIN events e ON e.event_id = er.event_id
                 JOIN categories c ON c.cat_id = e.cat_id
@@ -314,6 +330,9 @@ public class EventDAO {
         event.setCreatedBy(rs.getInt("created_by"));
         event.setCreatorName(rs.getString("creator_name"));
         event.setCreatedAt(rs.getTimestamp("created_at"));
+        BigDecimal claimedHours = rs.getBigDecimal("claimed_hours");
+        event.setClaimedHours(rs.wasNull() ? null : claimedHours);
+        event.setClaimStatus(rs.getString("claim_status"));
         return event;
     }
 

@@ -21,6 +21,8 @@ public class VolunteerEvent {
     private int createdBy;
     private String creatorName;
     private Timestamp createdAt;
+    private BigDecimal claimedHours;
+    private String claimStatus;
 
     public int getEventId() { return eventId; }
     public void setEventId(int eventId) { this.eventId = eventId; }
@@ -54,6 +56,15 @@ public class VolunteerEvent {
     public void setCreatorName(String creatorName) { this.creatorName = creatorName; }
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public BigDecimal getClaimedHours() { return claimedHours; }
+    public void setClaimedHours(BigDecimal claimedHours) { this.claimedHours = claimedHours; }
+    public String getClaimStatus() { return claimStatus; }
+    public void setClaimStatus(String claimStatus) { this.claimStatus = claimStatus; }
+
+    public boolean isClaimed() {
+        return claimedHours != null;
+    }
 
     public int getSlotsLeft() {
         return Math.max(0, maxVolunteers - joinedCount);
