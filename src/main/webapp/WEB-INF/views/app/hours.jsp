@@ -220,7 +220,10 @@
             const reviewer = textOrFallback(button.dataset.detailApprover, "Waiting for review");
             const approvedAt = textOrFallback(button.dataset.detailApprovedAt, "");
             approver.textContent = approvedAt ? reviewer + " / " + approvedAt : reviewer;
-            remarks.textContent = textOrFallback(button.dataset.detailRemarks, "Waiting for review.");
+            const remarksFallback = (button.dataset.detailStatus || "").toLowerCase() === "pending"
+                    ? "Waiting for review."
+                    : "No reviewer remarks.";
+            remarks.textContent = textOrFallback(button.dataset.detailRemarks, remarksFallback);
 
             const proofUrl = textOrFallback(button.dataset.detailProof, "");
             if (proofUrl) {

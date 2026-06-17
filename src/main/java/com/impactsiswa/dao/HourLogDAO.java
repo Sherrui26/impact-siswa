@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,8 +90,8 @@ public class HourLogDAO {
 
     public void create(int userId, int eventId, BigDecimal hours, String evidence, String proofImage) {
         String sql = """
-                INSERT INTO hour_logs (user_id, event_id, hours_claimed, evidence, proof_image, status, remarks)
-                VALUES (?, ?, ?, ?, ?, 'pending', 'Submitted for verification.')
+                INSERT INTO hour_logs (user_id, event_id, hours_claimed, evidence, proof_image, status)
+                VALUES (?, ?, ?, ?, ?, 'pending')
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -161,7 +162,11 @@ public class HourLogDAO {
 
                     try (PreparedStatement updateLog = conn.prepareStatement(updateLogSql)) {
                         updateLog.setString(1, status);
-                        updateLog.setString(2, remarks);
+                        if (remarks == null || remarks.isBlank()) {
+                            updateLog.setNull(2, Types.VARCHAR);
+                        } else {
+                            updateLog.setString(2, remarks);
+                        }
                         updateLog.setInt(3, approverId);
                         updateLog.setInt(4, logId);
                         updateLog.executeUpdate();

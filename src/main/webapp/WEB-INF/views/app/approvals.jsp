@@ -128,7 +128,7 @@
                                     <form class="form-grid" method="post" action="${ctx}/app/approvals">
                                         <input type="hidden" name="action" value="hours">
                                         <input type="hidden" name="logId" value="${log.logId}">
-                                        <div class="field"><textarea name="remarks" placeholder="Approval or rejection remarks">${log.remarks}</textarea></div>
+                                        <div class="field"><textarea name="remarks" placeholder="Approval or rejection remarks"><c:out value="${log.remarks}"/></textarea></div>
                                         <div class="table-actions">
                                             <button class="btn success" name="decision" value="approved" type="button"
                                                     data-confirm-submit
