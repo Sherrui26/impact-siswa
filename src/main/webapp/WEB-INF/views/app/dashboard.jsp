@@ -24,7 +24,7 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <c:if test="${sessionScope.currentUser.role eq 'student'}">
+        <c:if test="${sessionScope.currentUser.role eq 'student'}">
     <div class="achievement-chip">
         <img src="${dashboardBadgeImage}" alt="${sessionScope.currentUser.badgeName} badge">
         <div>
@@ -32,9 +32,70 @@
             <strong>${sessionScope.currentUser.badgeName} Badge</strong>
             <em>${sessionScope.currentUser.totalHours} verified hours</em>
         </div>
+        <button type="button" class="badge-info-btn" id="badgeInfoBtn" aria-label="How badges work" title="How badges work"><i class="bi bi-info-circle"></i></button>
     </div>
     </c:if>
 </div>
+
+<c:if test="${sessionScope.currentUser.role eq 'student'}">
+<div class="modal-backdrop" id="badgeInfoModal" hidden>
+    <div class="detail-dialog badge-info-dialog" role="dialog" aria-modal="true" aria-labelledby="badgeInfoTitle">
+        <div class="detail-header">
+            <div>
+                <p class="confirm-kicker">Achievement badges</p>
+                <h2 id="badgeInfoTitle">Climb the ranks by volunteering</h2>
+            </div>
+            <button class="icon-btn" type="button" data-badge-info-close aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <p class="muted">Every hour you complete and get verified counts toward your badge. The more you volunteer, the higher you climb. Here are the tiers:</p>
+                <div class="badge-tier-list">
+            <div class="badge-tier ${sessionScope.currentUser.badgeName eq 'Platinum' ? 'is-current' : ''}">
+                <img src="${ctx}/images/platinum.png" alt="Platinum badge">
+                <div><strong>Platinum</strong><span>100+ hours</span></div>
+                <c:if test="${sessionScope.currentUser.badgeName eq 'Platinum'}"><span class="pill green">You are here</span></c:if>
+            </div>
+            <div class="badge-tier ${sessionScope.currentUser.badgeName eq 'Gold' ? 'is-current' : ''}">
+                <img src="${ctx}/images/gold.png" alt="Gold badge">
+                <div><strong>Gold</strong><span>70 - 99 hours</span></div>
+                <c:if test="${sessionScope.currentUser.badgeName eq 'Gold'}"><span class="pill green">You are here</span></c:if>
+            </div>
+            <div class="badge-tier ${sessionScope.currentUser.badgeName eq 'Silver' ? 'is-current' : ''}">
+                <img src="${ctx}/images/silver.png" alt="Silver badge">
+                <div><strong>Silver</strong><span>35 - 69 hours</span></div>
+                <c:if test="${sessionScope.currentUser.badgeName eq 'Silver'}"><span class="pill green">You are here</span></c:if>
+            </div>
+            <div class="badge-tier ${sessionScope.currentUser.badgeName eq 'Bronze' ? 'is-current' : ''}">
+                <img src="${ctx}/images/bronze.png" alt="Bronze badge">
+                <div><strong>Bronze</strong><span>0 - 34 hours</span></div>
+                <c:if test="${sessionScope.currentUser.badgeName eq 'Bronze'}"><span class="pill green">You are here</span></c:if>
+            </div>
+        </div>
+        <div class="detail-section badge-next-step">
+            <c:choose>
+                <c:when test="${sessionScope.currentUser.badgeName eq 'Bronze'}">
+                    <h3>Next stop: Silver</h3>
+                    <p class="muted">Reach 35 verified hours to earn your Silver badge. Join more events to get there.</p>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.badgeName eq 'Silver'}">
+                    <h3>Next stop: Gold</h3>
+                    <p class="muted">Reach 70 verified hours to earn your Gold badge. Keep volunteering.</p>
+                </c:when>
+                <c:when test="${sessionScope.currentUser.badgeName eq 'Gold'}">
+                    <h3>Next stop: Platinum</h3>
+                    <p class="muted">Reach 100 verified hours to earn the top Platinum badge. You are almost there.</p>
+                </c:when>
+                <c:otherwise>
+                    <h3>You have reached the top</h3>
+                    <p class="muted">Platinum is the highest badge. Keep volunteering to grow your impact even further.</p>
+                </c:otherwise>
+            </c:choose>
+        </div>
+        <div class="confirm-actions">
+            <a class="btn success" href="${ctx}/app/events"><i class="bi bi-calendar-check"></i>Browse Events to Join</a>
+        </div>
+    </div>
+</div>
+</c:if>
 
 <div class="grid stats-grid">
     <c:choose>
@@ -166,6 +227,26 @@ function barChart(id, labels, values, color) {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 }
+(() => {
+    const modal = document.querySelector("#badgeInfoModal");
+    const openBtn = document.querySelector("#badgeInfoBtn");
+    if (!modal || !openBtn) return;
+
+    function open() {
+        modal.hidden = false;
+        document.body.classList.add("modal-open");
+    }
+    function close() {
+        modal.hidden = true;
+        document.body.classList.remove("modal-open");
+    }
+
+    openBtn.addEventListener("click", open);
+    document.querySelectorAll("[data-badge-info-close]").forEach((b) => b.addEventListener("click", close));
+    modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) close(); });
+})();
+
 barChart("facultyChart", facultyLabels, facultyValues, "#2563eb");
 barChart("clubChart", clubLabels, clubValues, "#0f8b63");
 new Chart(document.getElementById("monthlyChart"), {

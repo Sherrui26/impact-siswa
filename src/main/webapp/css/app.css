@@ -221,6 +221,7 @@ button, input, select, textarea { font: inherit; }
   margin-bottom: 22px;
 }
 .achievement-chip {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -229,7 +230,7 @@ button, input, select, textarea { font: inherit; }
   border-radius: 8px;
   background: #fff;
   box-shadow: var(--shadow);
-  padding: 10px 14px 10px 10px;
+  padding: 10px 34px 10px 10px;
 }
 .achievement-chip img {
   flex: 0 0 62px;
@@ -257,6 +258,55 @@ button, input, select, textarea { font: inherit; }
   font-style: normal;
   font-weight: 850;
 }
+.badge-info-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+.badge-info-btn:hover { color: var(--green-dark); background: #edf7f3; }
+.badge-info-dialog { width: min(100%, 560px); }
+.badge-tier-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+.badge-tier {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+.badge-tier.is-current {
+  border-color: var(--green);
+  background: #f0fdf4;
+}
+.badge-tier img {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+.badge-tier > div {
+  flex: 1;
+  min-width: 0;
+}
+.badge-tier strong { display: block; }
+.badge-tier span { color: var(--muted); font-size: 13px; }
+.badge-tier .pill { flex: 0 0 auto; }
+.badge-next-step { margin-top: 4px; }
 .grid { display: grid; gap: 18px; }
 .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .dash-grid { grid-template-columns: minmax(0, 1.25fr) minmax(340px, .75fr); }
