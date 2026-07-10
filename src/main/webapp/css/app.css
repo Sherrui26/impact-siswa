@@ -129,6 +129,31 @@ button, input, select, textarea { font: inherit; }
   padding: 10px 12px;
 }
 .field textarea { min-height: 96px; resize: vertical; }
+.password-field { position: relative; }
+.password-field input { padding-right: 44px; }
+.password-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+.password-toggle:hover { color: var(--ink); }
+.password-mismatch {
+  display: block;
+  margin-top: 6px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 750;
+}
+.password-mismatch[hidden] { display: none; }
 .btn {
   display: inline-flex;
   align-items: center;

@@ -66,14 +66,34 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <div class="field"><label>Password</label><input type="password" name="password" minlength="8" required></div>
+                        <div class="field">
+                            <label>Password</label>
+                            <div class="password-field">
+                                <input type="password" name="password" id="registerPassword" minlength="8" required>
+                                <button type="button" class="password-toggle" data-password-toggle="registerPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Confirm Password</label>
+                            <div class="password-field">
+                                <input type="password" name="confirmPassword" id="confirmPassword" minlength="8" required>
+                                <button type="button" class="password-toggle" data-password-toggle="confirmPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                            </div>
+                            <span class="password-mismatch" id="passwordMismatch" hidden>Passwords do not match.</span>
+                        </div>
                         <button class="btn primary" type="submit"><i class="bi bi-person-plus"></i>Create Account</button>
                     </form>
                 </c:when>
                 <c:otherwise>
                     <form class="form-grid" action="${ctx}/login" method="post">
                         <div class="field"><label>Email or Matric Number</label><input name="login" placeholder="student@impact.edu.my" required></div>
-                        <div class="field"><label>Password</label><input type="password" name="password" placeholder="student123" required></div>
+                        <div class="field">
+                            <label>Password</label>
+                            <div class="password-field">
+                                <input type="password" name="password" id="loginPassword" placeholder="student123" required>
+                                <button type="button" class="password-toggle" data-password-toggle="loginPassword" aria-label="Show password"><i class="bi bi-eye"></i></button>
+                            </div>
+                        </div>
                         <button class="btn primary" type="submit"><i class="bi bi-box-arrow-in-right"></i>Login</button>
                     </form>
                 </c:otherwise>
@@ -81,5 +101,39 @@
         </div>
     </section>
 </main>
+<script>
+(() => {
+    // Show / hide password toggles
+    document.querySelectorAll("[data-password-toggle]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const input = document.getElementById(button.dataset.passwordToggle);
+            if (!input) return;
+            const showing = input.type === "text";
+            input.type = showing ? "password" : "text";
+            button.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+            const icon = button.querySelector("i");
+            if (icon) icon.className = showing ? "bi bi-eye" : "bi bi-eye-slash";
+        });
+    });
+
+    // Confirm-password match check (register form only)
+    const password = document.getElementById("registerPassword");
+    const confirm = document.getElementById("confirmPassword");
+    const mismatch = document.getElementById("passwordMismatch");
+    if (password && confirm) {
+        const validate = () => {
+            if (confirm.value && confirm.value !== password.value) {
+                confirm.setCustomValidity("Passwords do not match.");
+                if (mismatch) mismatch.hidden = false;
+            } else {
+                confirm.setCustomValidity("");
+                if (mismatch) mismatch.hidden = true;
+            }
+        };
+        password.addEventListener("input", validate);
+        confirm.addEventListener("input", validate);
+    }
+})();
+</script>
 </body>
 </html>

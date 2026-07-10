@@ -70,10 +70,18 @@ public class AuthServlet extends HttpServlet {
 
     private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String password = value(req, "password");
+        String confirmPassword = value(req, "confirmPassword");
         if (password.length() < 8) {
             req.setAttribute("mode", "register");
             req.setAttribute("faculties", affiliationDAO.findActiveByType("faculty"));
             req.setAttribute("error", "Please use a password with at least 8 characters.");
+            req.getRequestDispatcher("/WEB-INF/views/auth.jsp").forward(req, resp);
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            req.setAttribute("mode", "register");
+            req.setAttribute("faculties", affiliationDAO.findActiveByType("faculty"));
+            req.setAttribute("error", "Passwords do not match. Please re-enter them.");
             req.getRequestDispatcher("/WEB-INF/views/auth.jsp").forward(req, resp);
             return;
         }
