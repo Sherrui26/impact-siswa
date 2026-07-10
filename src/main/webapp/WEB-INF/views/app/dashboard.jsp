@@ -288,7 +288,17 @@ function barChart(id, labels, values, color) {
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) close(); });
 })();
 
-barChart("facultyChart", facultyLabels, facultyValues, "#2563eb");
+new Chart(document.getElementById("facultyChart"), {
+  type: "bar",
+  data: { labels: facultyLabels, datasets: [{ data: facultyValues, backgroundColor: "#2563eb", borderRadius: 6 }] },
+  options: {
+    indexAxis: "y",
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { ticks: { autoSkip: false } } }
+  }
+});
 barChart("clubChart", clubLabels, clubValues, "#0f8b63");
 new Chart(document.getElementById("monthlyChart"), {
   type: "line",
