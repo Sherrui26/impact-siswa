@@ -169,27 +169,27 @@
     </div>
 </c:if>
 
-<div class="grid dash-grid" style="margin-top:18px;">
-    <div class="grid">
-        <div class="panel chart-box">
-            <h2>Hours by Faculty</h2>
-            <p class="panel-subtitle">Approved volunteer hours grouped by faculty.</p>
-            <canvas id="facultyChart"></canvas>
-        </div>
-        <div class="panel chart-box">
-            <h2>Monthly Hours Trend</h2>
-            <p class="panel-subtitle">Approved hours grouped by submission month.</p>
-            <canvas id="monthlyChart"></canvas>
-        </div>
-    </div>
-    <div class="grid">
-        <div class="panel chart-box">
-            <h2>Top 5 Organizers/Clubs</h2>
-            <p class="panel-subtitle">Approved volunteer hours by club or university unit.</p>
-            <canvas id="clubChart"></canvas>
-        </div>
-                <c:choose>
-            <c:when test="${sessionScope.currentUser.role eq 'student'}">
+<c:choose>
+    <c:when test="${sessionScope.currentUser.role eq 'student'}">
+        <div class="grid dash-grid" style="margin-top:18px;">
+            <div class="grid">
+                <div class="panel chart-box">
+                    <h2>Hours by Faculty</h2>
+                    <p class="panel-subtitle">Approved volunteer hours grouped by faculty.</p>
+                    <canvas id="facultyChart"></canvas>
+                </div>
+                <div class="panel chart-box">
+                    <h2>Monthly Hours Trend</h2>
+                    <p class="panel-subtitle">Approved hours grouped by submission month.</p>
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="grid">
+                <div class="panel chart-box">
+                    <h2>Top 5 Organizers/Clubs</h2>
+                    <p class="panel-subtitle">Approved volunteer hours by club or university unit.</p>
+                    <canvas id="clubChart"></canvas>
+                </div>
                 <div class="panel">
                     <h2>Upcoming Events</h2>
                     <p class="panel-subtitle">Events students can request to join next.</p>
@@ -208,32 +208,49 @@
                         </c:forEach>
                     </div>
                 </div>
-            </c:when>
-            <c:otherwise>
-                <div class="panel">
-                    <h2>Recent Hour Logs</h2>
-                    <p class="panel-subtitle">Latest volunteer hour submissions across the system.</p>
-                    <div class="table-wrap">
-                        <table class="compact-table">
-                            <thead><tr><th>Student</th><th>Event</th><th>Hours</th><th>Status</th><th>Submitted</th></tr></thead>
-                            <tbody>
-                            <c:forEach var="log" items="${recentLogs}">
-                                <tr>
-                                    <td><c:out value="${log.studentName}"/></td>
-                                    <td><c:out value="${log.eventTitle}"/></td>
-                                    <td>${log.hoursClaimed}</td>
-                                    <td><span class="pill ${log.status eq 'approved' ? 'green' : (log.status eq 'pending' ? 'amber' : 'red')}">${log.status}</span></td>
-                                    <td><fmt:formatDate value="${log.submittedAt}" pattern="dd MMM yyyy"/></td>
-                                </tr>
-                            </c:forEach>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+        </div>
+    </c:when>
+        <c:otherwise>
+        <div class="grid report-grid" style="margin-top:18px;">
+            <div class="panel chart-box">
+                <h2>Hours by Faculty</h2>
+                <p class="panel-subtitle">Approved volunteer hours grouped by faculty.</p>
+                <canvas id="facultyChart"></canvas>
+            </div>
+            <div class="panel chart-box">
+                <h2>Monthly Hours Trend</h2>
+                <p class="panel-subtitle">Approved hours grouped by submission month.</p>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+            <div class="panel chart-box">
+                <h2>Top 5 Organizers/Clubs</h2>
+                <p class="panel-subtitle">Approved volunteer hours by club or university unit.</p>
+                <canvas id="clubChart"></canvas>
+            </div>
+            <div class="panel">
+                <h2>Recent Hour Logs</h2>
+                <p class="panel-subtitle">Latest volunteer hour submissions across the system.</p>
+                <div class="table-wrap">
+                    <table class="compact-table">
+                        <thead><tr><th>Student</th><th>Event</th><th>Hours</th><th>Status</th><th>Submitted</th></tr></thead>
+                        <tbody>
+                        <c:forEach var="log" items="${recentLogs}">
+                            <tr>
+                                <td><c:out value="${log.studentName}"/></td>
+                                <td><c:out value="${log.eventTitle}"/></td>
+                                <td>${log.hoursClaimed}</td>
+                                <td><span class="pill ${log.status eq 'approved' ? 'green' : (log.status eq 'pending' ? 'amber' : 'red')}">${log.status}</span></td>
+                                <td><fmt:formatDate value="${log.submittedAt}" pattern="dd MMM yyyy"/></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</div>
+            </div>
+        </div>
+    </c:otherwise>
+</c:choose>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
