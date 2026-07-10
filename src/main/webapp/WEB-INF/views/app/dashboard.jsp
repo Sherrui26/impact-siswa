@@ -190,22 +190,36 @@
                     <p class="panel-subtitle">Approved volunteer hours by club or university unit.</p>
                     <canvas id="clubChart"></canvas>
                 </div>
-                <div class="panel">
-                    <h2>Upcoming Events</h2>
-                    <p class="panel-subtitle">Events students can request to join next.</p>
-                    <div class="event-list">
+                                <div class="panel">
+                    <div class="section-title" style="margin-bottom:14px;">
+                        <div>
+                            <h2>Upcoming Events</h2>
+                            <p class="panel-subtitle" style="margin-bottom:0;">Events you can request to join next.</p>
+                        </div>
+                        <a class="btn" href="${ctx}/app/events"><i class="bi bi-arrow-right"></i>See all</a>
+                    </div>
+                    <div class="upcoming-list">
                         <c:forEach var="event" items="${events}" varStatus="loop">
                             <c:if test="${loop.index lt 3}">
-                                <article class="event-card">
-                                    <h3><c:out value="${event.title}"/></h3>
-                                    <div class="event-meta">
-                                        <span class="pill"><c:out value="${event.categoryName}"/></span>
-                                        <span class="pill green"><fmt:formatDate value="${event.eventDate}" pattern="dd MMM yyyy"/></span>
-                                        <span class="pill amber">${event.hours} hours</span>
-                                    </div>
-                                </article>
+                                <a class="upcoming-item" href="${ctx}/app/events">
+                                    <span class="upcoming-date">
+                                        <strong><fmt:formatDate value="${event.eventDate}" pattern="dd"/></strong>
+                                        <span><fmt:formatDate value="${event.eventDate}" pattern="MMM"/></span>
+                                    </span>
+                                    <span class="upcoming-body">
+                                        <strong><c:out value="${event.title}"/></strong>
+                                        <span class="upcoming-meta">
+                                            <span><i class="bi bi-geo-alt"></i><c:out value="${event.location}"/></span>
+                                            <span><i class="bi bi-clock"></i>${event.hours} hours</span>
+                                        </span>
+                                    </span>
+                                    <span class="pill"><c:out value="${event.categoryName}"/></span>
+                                </a>
                             </c:if>
                         </c:forEach>
+                        <c:if test="${empty events}">
+                            <div class="empty-state"><strong>No upcoming events.</strong><p class="muted">Check back soon for new opportunities.</p></div>
+                        </c:if>
                     </div>
                 </div>
             </div>
