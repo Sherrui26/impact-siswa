@@ -11,12 +11,14 @@
     </div>
     <nav class="nav" aria-label="Main navigation">
         <a class="nav-link ${activePage eq 'dashboard' ? 'active' : ''}" href="${ctx}/app/dashboard"><i class="bi bi-grid-1x2-fill"></i>Dashboard</a>
+        <c:if test="${user.role ne 'student'}">
+            <a class="nav-link ${activePage eq 'approvals' ? 'active' : ''}" href="${ctx}/app/approvals"><i class="bi bi-check2-square"></i>Approvals</a>
+        </c:if>
         <a class="nav-link ${activePage eq 'events' ? 'active' : ''}" href="${ctx}/app/events"><i class="bi bi-calendar-event"></i>Events</a>
         <c:if test="${user.role eq 'student'}">
             <a class="nav-link ${activePage eq 'hours' ? 'active' : ''}" href="${ctx}/app/hours"><i class="bi bi-clock-history"></i>My Hours</a>
         </c:if>
         <c:if test="${user.role ne 'student'}">
-            <a class="nav-link ${activePage eq 'approvals' ? 'active' : ''}" href="${ctx}/app/approvals"><i class="bi bi-check2-square"></i>Approvals</a>
             <a class="nav-link ${activePage eq 'manage-events' ? 'active' : ''}" href="${ctx}/app/manage-events"><i class="bi bi-pencil-square"></i>Manage Events</a>
             <a class="nav-link ${activePage eq 'reports' ? 'active' : ''}" href="${ctx}/app/reports"><i class="bi bi-bar-chart-line"></i>Reports</a>
         </c:if>

@@ -427,19 +427,24 @@
   display: block;
 }
 
-.event-image-remove {
-  display: inline-flex;
+.event-image-field .event-image-remove {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 0;
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .event-image-remove input {
+  flex: 0 0 auto;
   width: 16px;
   height: 16px;
+  margin: 0;
   accent-color: var(--green);
 }
 
