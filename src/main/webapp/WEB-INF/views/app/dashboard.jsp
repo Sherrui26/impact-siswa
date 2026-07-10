@@ -188,26 +188,50 @@
             <p class="panel-subtitle">Approved volunteer hours by club or university unit.</p>
             <canvas id="clubChart"></canvas>
         </div>
-        <c:if test="${sessionScope.currentUser.role eq 'student'}">
-        <div class="panel">
-            <h2>Upcoming Events</h2>
-            <p class="panel-subtitle">Events students can request to join next.</p>
-            <div class="event-list">
-                <c:forEach var="event" items="${events}" varStatus="loop">
-                    <c:if test="${loop.index lt 3}">
-                        <article class="event-card">
-                            <h3><c:out value="${event.title}"/></h3>
-                            <div class="event-meta">
-                                <span class="pill"><c:out value="${event.categoryName}"/></span>
-                                <span class="pill green"><fmt:formatDate value="${event.eventDate}" pattern="dd MMM yyyy"/></span>
-                                <span class="pill amber">${event.hours} hours</span>
-                            </div>
-                        </article>
-                    </c:if>
-                </c:forEach>
-            </div>
-        </div>
-        </c:if>
+                <c:choose>
+            <c:when test="${sessionScope.currentUser.role eq 'student'}">
+                <div class="panel">
+                    <h2>Upcoming Events</h2>
+                    <p class="panel-subtitle">Events students can request to join next.</p>
+                    <div class="event-list">
+                        <c:forEach var="event" items="${events}" varStatus="loop">
+                            <c:if test="${loop.index lt 3}">
+                                <article class="event-card">
+                                    <h3><c:out value="${event.title}"/></h3>
+                                    <div class="event-meta">
+                                        <span class="pill"><c:out value="${event.categoryName}"/></span>
+                                        <span class="pill green"><fmt:formatDate value="${event.eventDate}" pattern="dd MMM yyyy"/></span>
+                                        <span class="pill amber">${event.hours} hours</span>
+                                    </div>
+                                </article>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="panel">
+                    <h2>Recent Hour Logs</h2>
+                    <p class="panel-subtitle">Latest volunteer hour submissions across the system.</p>
+                    <div class="table-wrap">
+                        <table class="compact-table">
+                            <thead><tr><th>Student</th><th>Event</th><th>Hours</th><th>Status</th><th>Submitted</th></tr></thead>
+                            <tbody>
+                            <c:forEach var="log" items="${recentLogs}">
+                                <tr>
+                                    <td><c:out value="${log.studentName}"/></td>
+                                    <td><c:out value="${log.eventTitle}"/></td>
+                                    <td>${log.hoursClaimed}</td>
+                                    <td><span class="pill ${log.status eq 'approved' ? 'green' : (log.status eq 'pending' ? 'amber' : 'red')}">${log.status}</span></td>
+                                    <td><fmt:formatDate value="${log.submittedAt}" pattern="dd MMM yyyy"/></td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>
 

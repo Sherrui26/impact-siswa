@@ -93,15 +93,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>reportServlet</servlet-name>
-        <servlet-class>com.impactsiswa.servlet.ReportServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>reportServlet</servlet-name>
-        <url-pattern>/app/reports</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>userAdminServlet</servlet-name>
         <servlet-class>com.impactsiswa.servlet.UserAdminServlet</servlet-class>
     </servlet>

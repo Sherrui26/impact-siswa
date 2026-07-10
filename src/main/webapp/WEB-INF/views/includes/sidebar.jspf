@@ -20,7 +20,6 @@
         </c:if>
         <c:if test="${user.role ne 'student'}">
             <a class="nav-link ${activePage eq 'manage-events' ? 'active' : ''}" href="${ctx}/app/manage-events"><i class="bi bi-pencil-square"></i>Manage Events</a>
-            <a class="nav-link ${activePage eq 'reports' ? 'active' : ''}" href="${ctx}/app/reports"><i class="bi bi-bar-chart-line"></i>Reports</a>
         </c:if>
         <c:if test="${user.role eq 'admin'}">
             <a class="nav-link ${activePage eq 'affiliations' ? 'active' : ''}" href="${ctx}/app/affiliations"><i class="bi bi-building"></i>Faculties & Clubs</a>

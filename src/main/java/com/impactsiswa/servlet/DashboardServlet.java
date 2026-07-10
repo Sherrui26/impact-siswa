@@ -31,6 +31,7 @@ public class DashboardServlet extends HttpServlet {
         req.setAttribute("facultyHours", reportDAO.hoursByFaculty());
         req.setAttribute("topClubs", reportDAO.topClubs());
         req.setAttribute("monthlyTrend", reportDAO.monthlyTrend());
+        req.setAttribute("recentLogs", hourLogDAO.findRecent(20));
         req.getRequestDispatcher("/WEB-INF/views/app/dashboard.jsp").forward(req, resp);
     }
 }
