@@ -143,28 +143,28 @@
                 <c:set var="eventVisualClass" value="event-visual-${event.catId}" />
                 <c:set var="eventImageUrl" value="" />
                 <c:if test="${event.hasImage}"><c:url var="eventImageUrl" value="/app/event-images/${event.imagePath}" /></c:if>
-                <tr>
+                                <tr class="event-row js-view-event" tabindex="0" role="button"
+                    aria-label="View details for ${fn:escapeXml(event.title)}"
+                    data-event-title="<c:out value='${event.title}'/>"
+                    data-event-category="<c:out value='${event.categoryName}'/>"
+                    data-event-date="<c:out value='${eventDateText}'/>"
+                    data-event-location="<c:out value='${event.location}'/>"
+                    data-event-hours="<c:out value='${event.hours}'/>"
+                    data-event-slots="<c:out value='${event.slotsLeft}'/>"
+                    data-event-capacity="<c:out value='${event.joinedCount}'/>/<c:out value='${event.maxVolunteers}'/>"
+                    data-event-organizer="<c:out value='${event.creatorName}'/>"
+                    data-event-description="<c:out value='${event.description}'/>"
+                    data-event-status="<c:out value='${event.status}'/>"
+                    data-event-image="${eventImageUrl}"
+                    data-event-visual="<c:out value='${eventVisualClass}'/>">
                     <td>
                         <div class="event-row-main">
-                            <button class="event-thumb ${eventVisualClass} ${event.hasImage ? 'has-photo' : ''} js-view-event" type="button"
-                                    data-event-title="<c:out value='${event.title}'/>"
-                                    data-event-category="<c:out value='${event.categoryName}'/>"
-                                    data-event-date="<c:out value='${eventDateText}'/>"
-                                    data-event-location="<c:out value='${event.location}'/>"
-                                    data-event-hours="<c:out value='${event.hours}'/>"
-                                    data-event-slots="<c:out value='${event.slotsLeft}'/>"
-                                    data-event-capacity="<c:out value='${event.joinedCount}'/>/<c:out value='${event.maxVolunteers}'/>"
-                                    data-event-organizer="<c:out value='${event.creatorName}'/>"
-                                    data-event-description="<c:out value='${event.description}'/>"
-                                    data-event-status="<c:out value='${event.status}'/>"
-                                    data-event-image="${eventImageUrl}"
-                                    data-event-visual="<c:out value='${eventVisualClass}'/>"
-                                    aria-label="View details for ${fn:escapeXml(event.title)}">
+                            <span class="event-thumb ${eventVisualClass} ${event.hasImage ? 'has-photo' : ''}">
                                 <c:choose>
                                     <c:when test="${event.hasImage}"><img class="event-photo" src="${eventImageUrl}" alt="<c:out value='${event.title}'/>"></c:when>
                                     <c:otherwise><span class="event-thumb-fallback"><i class="bi bi-image"></i></span></c:otherwise>
                                 </c:choose>
-                            </button>
+                            </span>
                             <div>
                                 <strong><c:out value="${event.title}"/></strong><br>
                                 <span class="label"><c:out value="${event.creatorName}"/></span>
@@ -341,36 +341,52 @@
         photo.removeAttribute("src");
     }
 
-    document.querySelectorAll(".js-view-event").forEach((button) => {
-        button.addEventListener("click", () => {
-            const eventStatus = textOrFallback(button.dataset.eventStatus, "open");
-            const visualClass = textOrFallback(button.dataset.eventVisual, "event-visual-default");
-            const imageUrl = textOrFallback(button.dataset.eventImage, "");
+        function openDetails(el) {
+        const eventStatus = textOrFallback(el.dataset.eventStatus, "open");
+        const visualClass = textOrFallback(el.dataset.eventVisual, "event-visual-default");
+        const imageUrl = textOrFallback(el.dataset.eventImage, "");
 
-            hero.className = "event-detail-hero " + visualClass + (imageUrl ? " has-photo" : "");
-            if (imageUrl) {
-                photo.src = imageUrl;
-                photo.hidden = false;
-            } else {
-                photo.hidden = true;
-                photo.removeAttribute("src");
+        hero.className = "event-detail-hero " + visualClass + (imageUrl ? " has-photo" : "");
+        if (imageUrl) {
+            photo.src = imageUrl;
+            photo.hidden = false;
+        } else {
+            photo.hidden = true;
+            photo.removeAttribute("src");
+        }
+
+        title.textContent = textOrFallback(el.dataset.eventTitle, "Event details");
+        category.textContent = textOrFallback(el.dataset.eventCategory, "Event");
+        categoryText.textContent = textOrFallback(el.dataset.eventCategory, "Event");
+        status.textContent = eventStatus;
+        status.className = "pill poster-pill " + (eventStatus === "open" ? "green" : "amber");
+        organizer.textContent = textOrFallback(el.dataset.eventOrganizer, "Organizer");
+        date.textContent = textOrFallback(el.dataset.eventDate, "-");
+        location.textContent = textOrFallback(el.dataset.eventLocation, "-");
+        hours.textContent = textOrFallback(el.dataset.eventHours, "0.00");
+        slots.textContent = textOrFallback(el.dataset.eventSlots, "0");
+        capacity.textContent = textOrFallback(el.dataset.eventCapacity, "0/0");
+        description.textContent = textOrFallback(el.dataset.eventDescription, "No description available.");
+
+        modal.hidden = false;
+        document.body.classList.add("modal-open");
+    }
+
+    document.querySelectorAll(".js-view-event").forEach((trigger) => {
+                trigger.addEventListener("click", (event) => {
+            // Ignore clicks on nested interactive controls (Edit link, Join/Cancel buttons),
+            // but still allow clicks on the trigger element itself (e.g. the card poster button).
+            const interactive = event.target.closest("a, button, form, input, select, textarea");
+            if (interactive && interactive !== trigger) return;
+            openDetails(trigger);
+        });
+        // Keyboard support for row triggers (Enter / Space).
+        trigger.addEventListener("keydown", (event) => {
+            if (event.target !== trigger) return;
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openDetails(trigger);
             }
-
-            title.textContent = textOrFallback(button.dataset.eventTitle, "Event details");
-            category.textContent = textOrFallback(button.dataset.eventCategory, "Event");
-            categoryText.textContent = textOrFallback(button.dataset.eventCategory, "Event");
-            status.textContent = eventStatus;
-            status.className = "pill poster-pill " + (eventStatus === "open" ? "green" : "amber");
-            organizer.textContent = textOrFallback(button.dataset.eventOrganizer, "Organizer");
-            date.textContent = textOrFallback(button.dataset.eventDate, "-");
-            location.textContent = textOrFallback(button.dataset.eventLocation, "-");
-            hours.textContent = textOrFallback(button.dataset.eventHours, "0.00");
-            slots.textContent = textOrFallback(button.dataset.eventSlots, "0");
-            capacity.textContent = textOrFallback(button.dataset.eventCapacity, "0/0");
-            description.textContent = textOrFallback(button.dataset.eventDescription, "No description available.");
-
-            modal.hidden = false;
-            document.body.classList.add("modal-open");
         });
     });
 
