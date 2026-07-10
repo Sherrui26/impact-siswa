@@ -25,8 +25,8 @@
     <div class="panel">
         <h2>Recent Hour Logs</h2>
         <p class="panel-subtitle">Operational table for recent submissions.</p>
-        <div class="table-wrap">
-            <table>
+                <div class="table-wrap">
+            <table class="compact-table">
                 <thead><tr><th>Student</th><th>Event</th><th>Hours</th><th>Status</th><th>Submitted</th></tr></thead>
                 <tbody>
                 <c:forEach var="log" items="${recentLogs}">

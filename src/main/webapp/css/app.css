@@ -374,6 +374,11 @@ button, input, select, textarea { font: inherit; }
 .event-description-field {
   grid-column: span 3;
 }
+.event-description-field textarea {
+  min-height: 44px;
+  height: 44px;
+  resize: vertical;
+}
 .event-form-action {
   align-self: end;
 }
@@ -524,6 +529,19 @@ th, td { padding: 14px; border-bottom: 1px solid var(--line); text-align: left; 
 th { background: #f8fafc; color: #475569; font-size: 12px; text-transform: uppercase; }
 td { color: #334155; font-size: 14px; }
 tr:last-child td { border-bottom: 0; }
+.compact-table { min-width: 0; table-layout: fixed; }
+.compact-table th, .compact-table td {
+  padding: 10px;
+  font-size: 13px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.compact-table th:nth-child(3),
+.compact-table td:nth-child(3) { width: 68px; text-align: right; white-space: nowrap; }
+.compact-table th:nth-child(4),
+.compact-table td:nth-child(4) { width: 78px; }
+.compact-table th:nth-child(5),
+.compact-table td:nth-child(5) { width: 84px; white-space: nowrap; }
 .event-list { display: grid; gap: 12px; }
 .event-card { padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .event-card h3 { margin: 0 0 8px; }
