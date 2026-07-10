@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: impact-siswa
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    # Render injects $PORT; the Dockerfile CMD binds Tomcat to it.
+    healthCheckPath: /login
+    envVars:
+      # Fill these in the Render dashboard with your free MySQL credentials
+      # (e.g. TiDB Cloud Serverless or Aiven for MySQL).
+      - key: IMPACT_DB_URL
+        sync: false
+      - key: IMPACT_DB_USER
+        sync: false
+      - key: IMPACT_DB_PASSWORD
+        sync: false
+      # Optional: where uploaded event/proof images are written.
+      # Note: free-tier disk is ephemeral, so uploads are lost on restart.
+      - key: IMPACT_UPLOAD_DIR
+        value: /tmp/uploads
