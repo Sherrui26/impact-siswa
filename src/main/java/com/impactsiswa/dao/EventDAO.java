@@ -93,13 +93,13 @@ public class EventDAO {
 
     public void create(VolunteerEvent event) {
         String sql = """
-                INSERT INTO events (title, description, cat_id, event_date, location, hours, max_volunteers, status, created_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO events (title, description, cat_id, event_date, location, hours, image_path, max_volunteers, status, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             fillEventStatement(ps, event);
-            ps.setInt(9, event.getCreatedBy());
+            ps.setInt(10, event.getCreatedBy());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
@@ -114,13 +114,13 @@ public class EventDAO {
     public void update(VolunteerEvent event) {
         String sql = """
                 UPDATE events
-                SET title = ?, description = ?, cat_id = ?, event_date = ?, location = ?, hours = ?, max_volunteers = ?, status = ?
+                SET title = ?, description = ?, cat_id = ?, event_date = ?, location = ?, hours = ?, image_path = ?, max_volunteers = ?, status = ?
                 WHERE event_id = ?
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             fillEventStatement(ps, event);
-            ps.setInt(9, event.getEventId());
+            ps.setInt(10, event.getEventId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new IllegalStateException("Unable to update event", e);
@@ -308,8 +308,13 @@ public class EventDAO {
         ps.setDate(4, event.getEventDate());
         ps.setString(5, event.getLocation());
         ps.setBigDecimal(6, event.getHours());
-        ps.setInt(7, event.getMaxVolunteers());
-        ps.setString(8, event.getStatus());
+        if (event.getImagePath() == null || event.getImagePath().isBlank()) {
+            ps.setNull(7, java.sql.Types.VARCHAR);
+        } else {
+            ps.setString(7, event.getImagePath());
+        }
+        ps.setInt(8, event.getMaxVolunteers());
+        ps.setString(9, event.getStatus());
     }
 
     private VolunteerEvent map(ResultSet rs) throws SQLException {
@@ -322,6 +327,7 @@ public class EventDAO {
         event.setEventDate(Date.valueOf(rs.getDate("event_date").toLocalDate()));
         event.setLocation(rs.getString("location"));
         event.setHours(rs.getBigDecimal("hours"));
+        event.setImagePath(rs.getString("image_path"));
         event.setMaxVolunteers(rs.getInt("max_volunteers"));
         event.setJoinedCount(rs.getInt("joined_count"));
         event.setJoinedByCurrentUser(rs.getInt("joined_by_current_user") == 1);

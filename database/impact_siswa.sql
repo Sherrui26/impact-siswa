@@ -47,6 +47,7 @@ CREATE TABLE events (
     event_date     DATE NOT NULL,
     location       VARCHAR(160) NOT NULL,
     hours          DECIMAL(5,2) NOT NULL,
+    image_path     VARCHAR(255) NULL,
     max_volunteers INT NOT NULL DEFAULT 50,
     status         ENUM('open','closed','cancelled') NOT NULL DEFAULT 'open',
     created_by     INT NOT NULL,
@@ -116,5 +117,20 @@ INSERT INTO events (title, description, cat_id, event_date, location, hours, max
 ('Food Bank Packing Drive', 'Pack and distribute dry food supplies for nearby communities.', 3, '2026-07-19', 'Dewan Mawar', 5.00, 80, 1),
 ('Campus Health Awareness Booth', 'Assist with registration, booth operations, and health campaign outreach.', 4, '2026-08-02', 'Faculty Walkway', 3.00, 30, 1),
 ('Recycling Collection Weekend', 'Collect, label, and sort recyclable materials from residential colleges.', 2, '2026-08-11', 'College Zone A', 4.00, 50, 2);
+
+-- ---------------------------------------------------------------------------
+-- Migration helper for existing databases (safe to run repeatedly).
+-- Adds the events.image_path column if an older schema is already in place.
+-- ---------------------------------------------------------------------------
+SET @has_image_col := (
+    SELECT COUNT(*) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = 'impact_siswa' AND TABLE_NAME = 'events' AND COLUMN_NAME = 'image_path'
+);
+SET @add_image_col := IF(@has_image_col = 0,
+    'ALTER TABLE events ADD COLUMN image_path VARCHAR(255) NULL AFTER hours',
+    'SELECT 1');
+PREPARE stmt FROM @add_image_col;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 

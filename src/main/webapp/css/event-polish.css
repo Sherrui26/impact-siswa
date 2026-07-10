@@ -1,0 +1,471 @@
+:root {
+  --event-shadow: 0 18px 46px rgba(30, 41, 59, .14);
+}
+
+/* View toggle -------------------------------------------------------------- */
+.view-toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f8fafc;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.view-toggle-btn.active {
+  background: #fff;
+  color: var(--green-dark);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, .1);
+}
+
+/* The hidden attribute must win over the grid/panel display rules below so the
+   Cards / List toggle can fully swap views instead of stacking them. */
+.events-market-grid[hidden],
+#eventsListView[hidden] {
+  display: none !important;
+}
+
+/* Card / market grid ------------------------------------------------------- */
+.events-market-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.market-event-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--event-shadow);
+}
+
+.event-poster,
+.upcoming-event-card,
+.event-detail-hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background-color: #1f4d5f;
+  background-size: cover;
+  background-position: center;
+  background-image:
+    linear-gradient(135deg, rgba(21, 32, 51, .12), rgba(21, 32, 51, .72)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.14) 0 1px, transparent 1px 22px);
+}
+
+.event-visual-1 { background-color: #235b9f; }
+.event-visual-2 { background-color: #0f8b63; }
+.event-visual-3 { background-color: #9f3b35; }
+.event-visual-4 { background-color: #0f6f91; }
+.event-visual-5 { background-color: #4b5b97; }
+.event-visual-default { background-color: #475569; }
+
+/* When a real uploaded photo is present, layer it under the shade and drop the
+   decorative pattern so the actual image reads clearly. */
+.event-poster.has-photo,
+.upcoming-event-card.has-photo,
+.event-detail-hero.has-photo {
+  background-image: none;
+}
+
+.event-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.event-poster {
+  display: block;
+  width: 100%;
+  min-height: 236px;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.event-poster-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, .12), rgba(15, 23, 42, .8)),
+    linear-gradient(90deg, rgba(15, 23, 42, .72), rgba(15, 23, 42, .18));
+}
+
+.event-poster:not(.has-photo)::before,
+.upcoming-event-card:not(.has-photo)::before,
+.event-detail-hero:not(.has-photo)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .22;
+  background:
+    linear-gradient(120deg, transparent 0 42%, rgba(255,255,255,.75) 42% 44%, transparent 44% 100%),
+    linear-gradient(25deg, transparent 0 58%, rgba(255,255,255,.48) 58% 60%, transparent 60% 100%);
+}
+
+.event-poster-content,
+.upcoming-card-content,
+.event-detail-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.event-poster-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 236px;
+  padding: 18px;
+}
+
+.event-poster-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: auto;
+}
+
+.poster-pill {
+  background: rgba(255,255,255,.9);
+  color: #152033;
+}
+
+.poster-pill.green {
+  background: rgba(220, 252, 231, .92);
+  color: #166534;
+}
+
+.poster-pill.amber {
+  background: rgba(254, 243, 199, .94);
+  color: #92400e;
+}
+
+.event-poster-title {
+  display: block;
+  margin-top: 34px;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.12;
+}
+
+.event-poster-meta,
+.upcoming-card-content > span:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  color: rgba(255,255,255,.88);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.event-poster-meta span,
+.upcoming-card-content > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.poster-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-top: 16px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.event-poster:hover .poster-cta,
+.event-poster:focus-visible .poster-cta {
+  text-decoration: underline;
+}
+
+.event-card-body {
+  display: grid;
+  align-content: space-between;
+  gap: 16px;
+  padding: 16px;
+}
+
+.event-description-preview {
+  display: -webkit-box;
+  min-height: 67px;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  line-height: 1.55;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.event-stat-row {
+  display: grid;
+  grid-template-columns: .55fr .75fr 1.2fr;
+  gap: 8px;
+}
+
+.event-stat-row div {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.event-stat-row span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.event-stat-row strong {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 42px;
+}
+
+.event-card-actions form {
+  margin: 0;
+}
+
+.event-status-stack {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+
+/* List view thumbnail ------------------------------------------------------ */
+.event-thumb {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 64px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #475569;
+  background-size: cover;
+  background-position: center;
+}
+
+.event-thumb .event-photo {
+  border-radius: 8px;
+}
+
+.event-thumb-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,.9);
+  font-size: 20px;
+}
+
+.event-row-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Upcoming (dashboard) ----------------------------------------------------- */
+.upcoming-list {
+  gap: 10px;
+}
+
+.upcoming-event-card {
+  display: block;
+  min-height: 132px;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.upcoming-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100px;
+}
+
+.upcoming-card-content strong {
+  display: block;
+  margin-top: auto;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.upcoming-card-content .event-meta {
+  margin-bottom: 22px;
+}
+
+/* Detail dialog hero ------------------------------------------------------- */
+.event-detail-dialog {
+  padding: 0;
+}
+
+.event-detail-hero {
+  min-height: 260px;
+  padding: 22px;
+}
+
+.event-detail-hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 216px;
+  padding-right: 54px;
+}
+
+.event-detail-hero h2 {
+  max-width: 620px;
+  margin: 16px 0 8px;
+  color: #fff;
+  font-size: 32px;
+  line-height: 1.08;
+}
+
+.event-detail-hero p {
+  margin: 0;
+  color: rgba(255,255,255,.82);
+  font-weight: 800;
+}
+
+.event-detail-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  background: rgba(255,255,255,.92);
+}
+
+.event-detail-grid {
+  padding: 20px 20px 0;
+}
+
+.event-detail-dialog .detail-section {
+  margin: 12px 20px 20px;
+}
+
+/* Manage-events image field ------------------------------------------------ */
+.event-image-field {
+  grid-column: span 4;
+}
+
+.event-image-picker-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.event-image-preview {
+  display: none;
+  width: 132px;
+  height: 88px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.event-image-preview.is-visible {
+  display: block;
+}
+
+.event-image-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.event-image-remove input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
+}
+
+@media (max-width: 1100px) {
+  .events-market-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .events-market-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-stat-row {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card-actions,
+  .event-card-actions .btn,
+  .event-card-actions form {
+    width: 100%;
+  }
+
+  .event-status-stack {
+    justify-items: stretch;
+  }
+
+  .event-poster,
+  .event-poster-content {
+    min-height: 220px;
+  }
+
+  .event-detail-hero h2 {
+    font-size: 26px;
+  }
+
+  .event-image-picker-row {
+    grid-template-columns: 1fr;
+  }
+
+  .event-image-field {
+    grid-column: auto;
+  }
+}

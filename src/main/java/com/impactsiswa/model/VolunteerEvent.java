@@ -13,6 +13,7 @@ public class VolunteerEvent {
     private Date eventDate;
     private String location;
     private BigDecimal hours;
+    private String imagePath;
     private int maxVolunteers;
     private int joinedCount;
     private boolean joinedByCurrentUser;
@@ -40,6 +41,9 @@ public class VolunteerEvent {
     public void setLocation(String location) { this.location = location; }
     public BigDecimal getHours() { return hours; }
     public void setHours(BigDecimal hours) { this.hours = hours; }
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+    public boolean isHasImage() { return imagePath != null && !imagePath.isBlank(); }
     public int getMaxVolunteers() { return maxVolunteers; }
     public void setMaxVolunteers(int maxVolunteers) { this.maxVolunteers = maxVolunteers; }
     public int getJoinedCount() { return joinedCount; }

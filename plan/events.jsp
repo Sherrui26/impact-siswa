@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="pageTitle" value="Events" />
 <%@ include file="../includes/layout-start.jspf" %>
 
@@ -9,21 +8,14 @@
         <h1>Volunteer Events</h1>
         <p>Browse opportunities and request to join. Approved registrations can be used for hour claims.</p>
     </div>
-    <div class="view-toggle" role="group" aria-label="Switch event layout">
-        <button type="button" class="view-toggle-btn" data-view-mode="card"><i class="bi bi-grid-3x3-gap"></i>Cards</button>
-        <button type="button" class="view-toggle-btn" data-view-mode="list"><i class="bi bi-list-ul"></i>List</button>
-    </div>
 </div>
 
-<%-- ===================== CARD VIEW ===================== --%>
-<div class="events-market-grid" id="eventsCardView">
+<div class="events-market-grid">
     <c:forEach var="event" items="${events}">
         <fmt:formatDate value="${event.eventDate}" pattern="dd MMM yyyy" var="eventDateText"/>
         <c:set var="eventVisualClass" value="event-visual-${event.catId}" />
-        <c:set var="eventImageUrl" value="" />
-        <c:if test="${event.hasImage}"><c:url var="eventImageUrl" value="/app/event-images/${event.imagePath}" /></c:if>
         <article class="market-event-card">
-            <button class="event-poster ${eventVisualClass} ${event.hasImage ? 'has-photo' : ''} js-view-event" type="button"
+            <button class="event-poster ${eventVisualClass} js-view-event" type="button"
                     data-event-title="<c:out value='${event.title}'/>"
                     data-event-category="<c:out value='${event.categoryName}'/>"
                     data-event-date="<c:out value='${eventDateText}'/>"
@@ -34,9 +26,7 @@
                     data-event-organizer="<c:out value='${event.creatorName}'/>"
                     data-event-description="<c:out value='${event.description}'/>"
                     data-event-status="<c:out value='${event.status}'/>"
-                    data-event-image="${eventImageUrl}"
                     data-event-visual="<c:out value='${eventVisualClass}'/>">
-                <c:if test="${event.hasImage}"><img class="event-photo" src="${eventImageUrl}" alt="<c:out value='${event.title}'/>"></c:if>
                 <span class="event-poster-shade"></span>
                 <span class="event-poster-content">
                     <span class="event-poster-top">
@@ -128,128 +118,9 @@
     </c:forEach>
 </div>
 
-<%-- ===================== LIST VIEW ===================== --%>
-<div class="panel" id="eventsListView" hidden>
-    <div class="table-wrap">
-        <table>
-            <thead>
-            <tr>
-                <th>Event</th><th>Category</th><th>Date</th><th>Location</th><th>Hours</th><th>Slots Left</th><th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="event" items="${events}">
-                <fmt:formatDate value="${event.eventDate}" pattern="dd MMM yyyy" var="eventDateText"/>
-                <c:set var="eventVisualClass" value="event-visual-${event.catId}" />
-                <c:set var="eventImageUrl" value="" />
-                <c:if test="${event.hasImage}"><c:url var="eventImageUrl" value="/app/event-images/${event.imagePath}" /></c:if>
-                <tr>
-                    <td>
-                        <div class="event-row-main">
-                            <button class="event-thumb ${eventVisualClass} ${event.hasImage ? 'has-photo' : ''} js-view-event" type="button"
-                                    data-event-title="<c:out value='${event.title}'/>"
-                                    data-event-category="<c:out value='${event.categoryName}'/>"
-                                    data-event-date="<c:out value='${eventDateText}'/>"
-                                    data-event-location="<c:out value='${event.location}'/>"
-                                    data-event-hours="<c:out value='${event.hours}'/>"
-                                    data-event-slots="<c:out value='${event.slotsLeft}'/>"
-                                    data-event-capacity="<c:out value='${event.joinedCount}'/>/<c:out value='${event.maxVolunteers}'/>"
-                                    data-event-organizer="<c:out value='${event.creatorName}'/>"
-                                    data-event-description="<c:out value='${event.description}'/>"
-                                    data-event-status="<c:out value='${event.status}'/>"
-                                    data-event-image="${eventImageUrl}"
-                                    data-event-visual="<c:out value='${eventVisualClass}'/>"
-                                    aria-label="View details for ${fn:escapeXml(event.title)}">
-                                <c:choose>
-                                    <c:when test="${event.hasImage}"><img class="event-photo" src="${eventImageUrl}" alt="<c:out value='${event.title}'/>"></c:when>
-                                    <c:otherwise><span class="event-thumb-fallback"><i class="bi bi-image"></i></span></c:otherwise>
-                                </c:choose>
-                            </button>
-                            <div>
-                                <strong><c:out value="${event.title}"/></strong><br>
-                                <span class="label"><c:out value="${event.creatorName}"/></span>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="pill"><c:out value="${event.categoryName}"/></span></td>
-                    <td>${eventDateText}</td>
-                    <td><c:out value="${event.location}"/></td>
-                    <td>${event.hours}</td>
-                    <td>${event.slotsLeft}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${sessionScope.currentUser.role eq 'student'}">
-                                <c:choose>
-                                    <c:when test="${event.claimed}">
-                                        <span class="pill ${event.claimStatus eq 'pending' ? 'amber' : 'green'}">
-                                            <i class="bi bi-check-circle"></i>&nbsp;Claimed (<fmt:formatNumber value="${event.claimedHours}" maxFractionDigits="2"/> Hours)
-                                        </span>
-                                        <c:if test="${event.claimStatus eq 'pending'}"><span class="label">Reviewing</span></c:if>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <form method="post" action="${ctx}/app/events">
-                                            <input type="hidden" name="eventId" value="${event.eventId}">
-                                            <c:choose>
-                                                <c:when test="${event.registrationStatus eq 'approved'}">
-                                                    <input type="hidden" name="action" value="cancelJoin">
-                                                    <button class="btn ghost" type="button"
-                                                            data-confirm-submit
-                                                            data-confirm-tone="danger"
-                                                            data-confirm-kicker="Cancel event registration"
-                                                            data-confirm-title="<c:out value='${event.title}'/>"
-                                                            data-confirm-message="Cancel your registration for this event?"
-                                                            data-confirm-action="Yes, Cancel Registration"
-                                                            data-confirm-icon="bi bi-x-circle">
-                                                        <i class="bi bi-x-circle"></i>Cancel
-                                                    </button>
-                                                </c:when>
-                                                <c:when test="${event.registrationStatus eq 'pending'}">
-                                                    <input type="hidden" name="action" value="cancelJoin">
-                                                    <button class="btn ghost" type="button"
-                                                            data-confirm-submit
-                                                            data-confirm-tone="danger"
-                                                            data-confirm-kicker="Cancel join request"
-                                                            data-confirm-title="<c:out value='${event.title}'/>"
-                                                            data-confirm-message="Cancel your pending request for this event?"
-                                                            data-confirm-action="Yes, Cancel Request"
-                                                            data-confirm-icon="bi bi-x-circle">
-                                                        <i class="bi bi-hourglass-split"></i>Pending
-                                                    </button>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <input type="hidden" name="action" value="join">
-                                                    <button class="btn success" type="button"
-                                                            data-confirm-submit
-                                                            data-confirm-kicker="${event.registrationStatus eq 'rejected' ? 'Request again' : 'Request event registration'}"
-                                                            data-confirm-title="<c:out value='${event.title}'/>"
-                                                            data-confirm-message="${event.registrationStatus eq 'rejected' ? 'Your previous request was rejected. Submit a new request?' : 'Submit a request to join this event?'}"
-                                                            data-confirm-action="${event.registrationStatus eq 'rejected' ? 'Yes, Request Again' : 'Yes, Request to Join'}"
-                                                            data-confirm-icon="bi bi-calendar-check"
-                                                            ${event.slotsLeft le 0 ? 'disabled' : ''}>
-                                                        <i class="bi bi-plus-circle"></i>${event.registrationStatus eq 'rejected' ? 'Request Again' : 'Join'}
-                                                    </button>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </form>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:when>
-                            <c:otherwise>
-                                <a class="btn" href="${ctx}/app/manage-events?edit=${event.eventId}"><i class="bi bi-pencil"></i>Edit</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
-    </div>
-</div>
-
 <div class="modal-backdrop" id="eventDetailModal" hidden>
     <div class="detail-dialog event-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="eventDetailTitle">
         <div class="event-detail-hero" id="eventDetailHero">
-            <img class="event-photo" id="eventDetailPhoto" alt="" hidden>
             <button class="icon-btn event-detail-close" type="button" data-event-detail-close aria-label="Close details"><i class="bi bi-x-lg"></i></button>
             <div class="event-detail-hero-content">
                 <div class="event-meta">
@@ -277,47 +148,10 @@
 
 <script>
 (() => {
-    // ---- List / card view toggle ----
-    const STORAGE_KEY = "impact-events-view";
-    const cardView = document.querySelector("#eventsCardView");
-    const listView = document.querySelector("#eventsListView");
-    const toggleButtons = document.querySelectorAll("[data-view-mode]");
-
-        function applyView(mode) {
-        const useList = mode === "list";
-        // Set inline display directly so it overrides the stylesheet's grid/block
-        // rules even if a cached event-polish.css lacks the [hidden] override.
-        if (cardView) {
-            cardView.hidden = useList;
-            cardView.style.display = useList ? "none" : "grid";
-        }
-        if (listView) {
-            listView.hidden = !useList;
-            listView.style.display = useList ? "block" : "none";
-        }
-        toggleButtons.forEach((btn) => {
-            btn.classList.toggle("active", btn.dataset.viewMode === mode);
-        });
-    }
-
-    let stored = "card";
-    try { stored = localStorage.getItem(STORAGE_KEY) || "card"; } catch (e) { /* storage may be blocked */ }
-    applyView(stored);
-
-    toggleButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-            const mode = btn.dataset.viewMode;
-            applyView(mode);
-            try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) { /* ignore */ }
-        });
-    });
-
-    // ---- Detail modal ----
     const modal = document.querySelector("#eventDetailModal");
     if (!modal) return;
 
     const hero = document.querySelector("#eventDetailHero");
-    const photo = document.querySelector("#eventDetailPhoto");
     const title = document.querySelector("#eventDetailTitle");
     const category = document.querySelector("#eventDetailCategory");
     const categoryText = document.querySelector("#eventDetailCategoryText");
@@ -337,25 +171,14 @@
     function closeDetails() {
         modal.hidden = true;
         document.body.classList.remove("modal-open");
-        photo.hidden = true;
-        photo.removeAttribute("src");
     }
 
     document.querySelectorAll(".js-view-event").forEach((button) => {
         button.addEventListener("click", () => {
             const eventStatus = textOrFallback(button.dataset.eventStatus, "open");
             const visualClass = textOrFallback(button.dataset.eventVisual, "event-visual-default");
-            const imageUrl = textOrFallback(button.dataset.eventImage, "");
 
-            hero.className = "event-detail-hero " + visualClass + (imageUrl ? " has-photo" : "");
-            if (imageUrl) {
-                photo.src = imageUrl;
-                photo.hidden = false;
-            } else {
-                photo.hidden = true;
-                photo.removeAttribute("src");
-            }
-
+            hero.className = "event-detail-hero " + visualClass;
             title.textContent = textOrFallback(button.dataset.eventTitle, "Event details");
             category.textContent = textOrFallback(button.dataset.eventCategory, "Event");
             categoryText.textContent = textOrFallback(button.dataset.eventCategory, "Event");

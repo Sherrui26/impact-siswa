@@ -8,10 +8,17 @@ public final class UploadStorage {
     }
 
     public static Path proofDirectory() {
+        return uploadRoot().resolve("hour-proofs");
+    }
+
+    public static Path eventDirectory() {
+        return uploadRoot().resolve("event-images");
+    }
+
+    private static Path uploadRoot() {
         String configuredRoot = System.getenv("IMPACT_UPLOAD_DIR");
-        Path root = configuredRoot == null || configuredRoot.isBlank()
+        return configuredRoot == null || configuredRoot.isBlank()
                 ? Paths.get(System.getProperty("user.dir"), "uploads")
                 : Paths.get(configuredRoot);
-        return root.resolve("hour-proofs");
     }
 }

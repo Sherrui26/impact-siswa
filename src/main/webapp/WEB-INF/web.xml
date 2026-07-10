@@ -39,11 +39,25 @@
     <servlet>
         <servlet-name>eventServlet</servlet-name>
         <servlet-class>com.impactsiswa.servlet.EventServlet</servlet-class>
+        <multipart-config>
+            <max-file-size>5242880</max-file-size>
+            <max-request-size>7340032</max-request-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
     </servlet>
     <servlet-mapping>
         <servlet-name>eventServlet</servlet-name>
         <url-pattern>/app/events</url-pattern>
         <url-pattern>/app/manage-events</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>eventImageServlet</servlet-name>
+        <servlet-class>com.impactsiswa.servlet.EventImageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>eventImageServlet</servlet-name>
+        <url-pattern>/app/event-images/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
